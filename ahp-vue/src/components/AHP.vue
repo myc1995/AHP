@@ -1,12 +1,18 @@
 <template>
   <div>
-    <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
-    <button v-on:click="handleClick">反转消息</button>
+    <div>
+      <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+      <button v-on:click="handleClick">反转消息</button>
+    </div>
+    <div>
+      <div id="chart"></div>
+    </div>
   </div>
 </template>
 
 <script>
   import axios from 'axios'
+  import echarts from 'echarts'
 
   export default {
     data () {
@@ -62,10 +68,11 @@
             console.log(err)
           })
       },
-      handleNodeClick (data) {
-        console.log(data)
+      drawTree () {
+        let chart = echarts.init(document.getElementById('chart'))
       }
-    }
+    },
+
   }
 </script>
 
