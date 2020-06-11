@@ -6,7 +6,6 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
@@ -17,6 +16,10 @@ module.exports = {
         pathRewrite: {
           '^/': ''
         }
+      },
+      '/ws/*': {
+        target: 'ws://127.0.0.1:8082',
+        ws: true
       }
     },
 

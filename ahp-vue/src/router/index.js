@@ -1,21 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HomePage from '@/components/HomePage'
-import Login from '@/components/Login'
+import AHP from '@/components/AHP'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/login',
-      name: 'Login',
-      component: Login
-    },
-    {
-      path: '/index',
-      name: 'HomePage',
-      component: HomePage
+      path: '/ahp',
+      name: 'AHP',
+      component: AHP
     }
   ]
 })

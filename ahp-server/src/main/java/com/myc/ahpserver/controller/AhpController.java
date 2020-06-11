@@ -4,7 +4,7 @@ import com.myc.ahpserver.common.ResultData;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("test")
+@RequestMapping("getAhp")
 public class AhpController {
 
     @GetMapping(value = "/hello")
