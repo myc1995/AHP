@@ -2,6 +2,7 @@
   <div>
     <el-row>
       <el-col :span="9">
+        <el-button type="primary" @click="this.newProject">新建工程</el-button>
     <el-tree
       :data="data4"
       :props="defaultProps"
@@ -10,6 +11,9 @@
       :expand-on-click-node="false"
       :render-content="renderContent">
     </el-tree>
+        <el-button type="primary" @click="">生成树图</el-button>
+        <el-button type="primary" @click="">编辑权重</el-button>
+        <el-button type="primary" @click="">工程分析</el-button>
       </el-col>
       <el-col :span="15">
         <div>
@@ -17,6 +21,7 @@
         </div>
       </el-col>
     </el-row>
+
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
@@ -26,6 +31,17 @@
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="this.doAdd">确 定</el-button>
+  </span>
+    </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible1"
+      width="30%"
+      :before-close="handleClose">
+      <el-input v-model="input1" placeholder="请输入节点名称"></el-input>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible1 = false">取 消</el-button>
+    <el-button type="primary" @click="this.addNewProject">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -38,9 +54,12 @@
     data () {
       return {
         addData:{},
+        input1:'',
+        dialogVisible1: false,
         input:'',
         dialogVisible: false,
-        data4: [{
+        data4: [
+          {
           id: 1,
           label: '一级 1',
           children: [{
@@ -96,6 +115,18 @@
       }
     },
     methods: {
+      addNewProject(){
+        const newChild = { id: 1, label: this.input1, children: [] };
+        this.data4.push(newChild)
+        this.dialogVisible1=false
+      },
+      newProject(){
+        if(this.data4.length!==0){
+          alert("已存在工程，无法新建！")
+        }else if(this.data4.length===0){
+          this.dialogVisible1=true
+        }
+      },
       handleClose(done) {
         this.$confirm('确认关闭？')
           .then(_ => {
@@ -104,12 +135,17 @@
           .catch(_ => {});
         },
       doAdd(){
+        if(this.data4.length===0){
+          this.dialogVisible = false
+          return null;
+        }
         const newChild = { id: id++, label: this.input, children: [] };
         if (!this.addData.children) {
           this.$set(this.addData, 'children', []);
         }
         this.addData.children.push(newChild);
         this.input=''
+        this.addData={}
         this.dialogVisible = false
       },
       handleAdd(data) {
@@ -197,7 +233,7 @@
 <style>
   #chart {
     width: 100%;
-    height: 420px;
+    height: 500px;
     border: 1px solid red;
     margin: 0 auto;
   }
