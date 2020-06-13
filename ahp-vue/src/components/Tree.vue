@@ -62,21 +62,74 @@
         data4: [
           {
             id: 1,
-            label: '一级 1',
-            children: [{
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-1',
+            label: '烟草质量',
+            children: [
+              {
+                id: 2,
+                label: '施肥',
+                children: [
+                  {
+                    id: 5,
+                    label: '氮',
+                    children: []
+                  }, {
+                    id: 5,
+                    label: '磷',
+                    children: []
+                  }, {
+                    id: 5,
+                    label: '钾',
+                    children: []
+                  }, {
+                    id: 5,
+                    label: '硼',
+                    children: []
+                  }
+                ]
+              }, {
+                id: 3,
+                label: '光照',
+                children: [
+                  {
+                    id: 5,
+                    label: '充足',
+                    children: []
+                  }, {
+                    id: 5,
+                    label: '正常',
+                    children: []
+                  }, {
+                    id: 5,
+                    label: '缺乏',
+                    children: []
+                  }, {
+                    id: 5,
+                    label: '暴晒',
+                    children: []
+                  }, {
+                    id: 5,
+                    label: '无光',
+                    children: []
+                  }
+                ]
+              }, {
+                id: 4,
+                label: '水分',
+                children: [{
+                  id: 5,
+                  label: '干旱',
                   children: []
                 }, {
-                  id: 10,
-                  label: '三级 1-1-2',
+                  id: 5,
+                  label: '充足',
+                  children: []
+                }, {
+                  id: 5,
+                  label: '湿涝',
                   children: []
                 }]
-            }]
+              }
+            ]
           }
         ],
         defaultProps: {
@@ -84,20 +137,15 @@
           label: 'label'
         },
         treeData: {
-          'name': '烟草质量',
+          'name': '烟草质量123',
           'children': [
             {
               'name': '施肥',
               'children': [
-                {
-                  'name': '施肥',
-                  'children': [
-                    {'name': '氮', 'value': 4116, 'children': []},
-                    {'name': '磷', 'value': 2105, 'children': []},
-                    {'name': '钾', 'value': 1316, 'children': []},
-                    {'name': '硼', 'value': 3151, 'children': []},
-                  ]
-                }
+                {'name': '氮', 'value': 4116, 'children': []},
+                {'name': '磷', 'value': 2105, 'children': []},
+                {'name': '钾', 'value': 1316, 'children': []},
+                {'name': '硼', 'value': 3151, 'children': []},
               ]
             },
             {
@@ -123,23 +171,22 @@
         },
         newTreeData: [],
         childInfo: [],
-        eachChildren:[]
+        eachChildren: [],
+
       }
     },
     methods: {
       build () {
-        this.buildTree(this.data4)
+        let res = this.buildTree(this.data4[0])
+        this.treeData = res
+        this.printChart()
       },
       buildTree (data) {
-        //首先判断eachChildren是否为空，如果不为空，则要构建对象，然后压入到空的数组内，再让eachChildren空，再执行递归
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].children.length > 0) {
-            this.buildTree(data[i].children)
-          } else if (data[i].children.length === 0) {
-            let obj={'name':data[i].label,'value':'1','children':[]}
-            this.eachChildren.push(obj)
-          }
+        let obj = {'name': data.label, 'children': []}
+        for (let i = 0; i < data.children.length; i++) {
+          obj.children.push(this.buildTree(data.children[i]))
         }
+        return obj
       },
       addNewProject () {
         const newChild = {id: 1, label: this.input1, children: []}
@@ -188,7 +235,7 @@
         children.splice(index, 1)
       },
       renderContent (h, {node, data, store}) {
-        return (
+        return(
           <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
           <span>
           <span>{node.label}</span>
