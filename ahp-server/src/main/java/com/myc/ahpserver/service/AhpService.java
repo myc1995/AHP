@@ -1,6 +1,6 @@
 package com.myc.ahpserver.service;
 
-import com.myc.ahpserver.common.ResultData;
+import com.myc.ahpserver.common.PostData;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,14 +10,10 @@ public class AhpService {
      */
     protected static double RI[] = {0.0, 0.0, 0.52, 0.89, 1.12, 1.26, 1.36, 1.41, 1.46, 1.49};
 
-    public ResultData getTreeInfo() {
+    public Double[][] handleData(PostData postData){
+
         return null;
     }
-
-    public Boolean calculateTree() {
-        return false;
-    }
-
     public static void main(String[] args) {
         // TODO Auto-generated method stub
         Double[][] matrix = new Double[6][6];

@@ -12,8 +12,14 @@
           :render-content="renderContent">
         </el-tree>
         <el-button type="primary" @click="this.build">生成树图</el-button>
-        <el-button type="primary" @click="">编辑权重</el-button>
+        <el-button type="primary" @click="this.handleAhpData">编辑权重</el-button>
         <el-button type="primary" @click="">工程分析</el-button>
+<!--        <el-steps :active="active" finish-status="success">-->
+<!--          <el-step title="新建工程"></el-step>-->
+<!--          <el-step title="生成树图"></el-step>-->
+<!--          <el-step title="编辑权重"></el-step>-->
+<!--          <el-step title="工程分析"></el-step>-->
+<!--        </el-steps>-->
       </el-col>
       <el-col :span="15">
         <div>
@@ -21,7 +27,20 @@
         </div>
       </el-col>
     </el-row>
-
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible3"
+      width="80%"
+      :before-close="handleClose">
+      <span v-for="n in dataLength">
+        <br v-if="n===5">
+        <el-input v-model="ahpInfoData[n-1]" placeholder="权重" style="width: 5%;margin-right: 2px"></el-input>
+      </span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible3 = false">取 消</el-button>
+    <el-button type="primary" @click="this.sendAhpData">确 定</el-button>
+  </span>
+    </el-dialog>
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
@@ -38,7 +57,7 @@
       :visible.sync="dialogVisible1"
       width="30%"
       :before-close="handleClose">
-      <el-input v-model="input1" placeholder="请输入节点名称"></el-input>
+      <el-input v-model="input1" placeholder="请输入工程名称"></el-input>
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible1 = false">取 消</el-button>
     <el-button type="primary" @click="this.addNewProject">确 定</el-button>
@@ -49,14 +68,19 @@
 
 <script>
   import echarts from 'echarts'
+  import axios from 'axios'
 
   let id = 1000
   export default {
     data () {
       return {
+        active: 1,
+        ahpData:[],
+        ahpInfoData:[],
         addData: {},
         input1: '',
         dialogVisible1: false,
+        dialogVisible3: false,
         input: '',
         dialogVisible: false,
         data4: [
@@ -172,10 +196,49 @@
         newTreeData: [],
         childInfo: [],
         eachChildren: [],
-
+        AhpDataStructureTemp:[],
+        AhpDataStructure:[],
+        dataLength:0,
       }
     },
     methods: {
+      sendAhpData(){
+        let postData={
+          'ahpInfoData':this.ahpInfoData,
+          'dataStructure':this.AhpDataStructureTemp
+        }
+        axios.post('/getAhp/calculate',postData)
+          .then(function (response) {
+            console.log(response.data)
+          })
+          .catch(function (err) {
+            console.log(err)
+          })
+      },
+      getLength(data){
+        let length=0;
+        for(let i=0;i<data.length;i++){
+          length+=((data[i]-1)+((data[i]-1)*((data[i]-1)-1))/2)
+        }
+        return length;
+      },
+      handleAhpData(){
+        this.getAhpDataStructure(this.treeData);
+        this.AhpDataStructureTemp=this.AhpDataStructure;
+        this.dataLength=this.getLength(this.AhpDataStructureTemp);
+        this.AhpDataStructure=[]
+        this.dialogVisible3=true;
+      },
+      getAhpDataStructure(data){
+        let childrenLength=data.children.length;
+        if(childrenLength!==0){
+          this.AhpDataStructure.push(childrenLength)
+        }
+        for(let i=0;i<childrenLength;i++){
+          let obj=data.children[i];
+          this.getAhpDataStructure(obj);
+        }
+      },
       build () {
         let res = this.buildTree(this.data4[0])
         this.treeData = res
@@ -189,6 +252,10 @@
         return obj
       },
       addNewProject () {
+        if(this.input1===''){
+          alert("工程名输入不能为空！")
+          return null
+        }
         const newChild = {id: 1, label: this.input1, children: []}
         this.data4.push(newChild)
         this.dialogVisible1 = false
@@ -209,8 +276,8 @@
           })
       },
       doAdd () {
-        if (this.data4.length === 0) {
-          this.dialogVisible = false
+        if(this.input===''){
+          alert("输入不能为空")
           return null
         }
         const newChild = {id: id++, label: this.input, children: []}

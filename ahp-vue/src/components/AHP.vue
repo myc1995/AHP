@@ -60,7 +60,7 @@
     },
     methods: {
       handleClick () {
-        axios.get('/getAhp/hello')
+        axios.post('/getAhp/hello')
           .then(function (response) {
             console.log(response.data)
           })
