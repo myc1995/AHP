@@ -205,7 +205,8 @@
       sendAhpData(){
         let postData={
           'ahpInfoData':this.ahpInfoData,
-          'dataStructure':this.AhpDataStructureTemp
+          'dataStructure':this.AhpDataStructureTemp,
+          'infoLength':this.dataLength
         }
         axios.post('/getAhp/calculate',postData)
           .then(function (response) {

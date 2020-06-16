@@ -3,6 +3,15 @@ package com.myc.ahpserver.common;
 public class PostData {
     private double[] ahpInfoData;
     private int[] dataStructure;
+    private int dataLength;
+
+    public int getDataLength() {
+        return dataLength;
+    }
+
+    public void setDataLength(int dataLength) {
+        this.dataLength = dataLength;
+    }
 
     public double[] getAhpInfoData() {
         return ahpInfoData;
