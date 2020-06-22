@@ -14,12 +14,6 @@
         <el-button type="primary" @click="this.build">生成树图</el-button>
         <el-button type="primary" @click="this.handleAhpData">编辑权重</el-button>
         <el-button type="primary" @click="">工程分析</el-button>
-<!--        <el-steps :active="active" finish-status="success">-->
-<!--          <el-step title="新建工程"></el-step>-->
-<!--          <el-step title="生成树图"></el-step>-->
-<!--          <el-step title="编辑权重"></el-step>-->
-<!--          <el-step title="工程分析"></el-step>-->
-<!--        </el-steps>-->
       </el-col>
       <el-col :span="15">
         <div>
@@ -33,7 +27,7 @@
       width="80%"
       :before-close="handleClose">
       <span v-for="n in dataLength">
-        <br v-if="n===5">
+        <br v-if="n%5===0">
         <el-input v-model="ahpInfoData[n-1]" placeholder="权重" style="width: 5%;margin-right: 2px"></el-input>
       </span>
       <span slot="footer" class="dialog-footer">
@@ -75,8 +69,8 @@
     data () {
       return {
         active: 1,
-        ahpData:[],
-        ahpInfoData:[],
+        ahpData: [],
+        ahpInfoData: [],
         addData: {},
         input1: '',
         dialogVisible1: false,
@@ -93,19 +87,19 @@
                 label: '施肥',
                 children: [
                   {
-                    id: 5,
+
                     label: '氮',
                     children: []
                   }, {
-                    id: 5,
+
                     label: '磷',
                     children: []
                   }, {
-                    id: 5,
+
                     label: '钾',
                     children: []
                   }, {
-                    id: 5,
+
                     label: '硼',
                     children: []
                   }
@@ -115,23 +109,23 @@
                 label: '光照',
                 children: [
                   {
-                    id: 5,
+
                     label: '充足',
                     children: []
                   }, {
-                    id: 5,
+
                     label: '正常',
                     children: []
                   }, {
-                    id: 5,
+
                     label: '缺乏',
                     children: []
                   }, {
-                    id: 5,
+
                     label: '暴晒',
                     children: []
                   }, {
-                    id: 5,
+
                     label: '无光',
                     children: []
                   }
@@ -140,15 +134,15 @@
                 id: 4,
                 label: '水分',
                 children: [{
-                  id: 5,
+
                   label: '干旱',
                   children: []
                 }, {
-                  id: 5,
+
                   label: '充足',
                   children: []
                 }, {
-                  id: 5,
+
                   label: '湿涝',
                   children: []
                 }]
@@ -196,48 +190,55 @@
         newTreeData: [],
         childInfo: [],
         eachChildren: [],
-        AhpDataStructureTemp:[],
-        AhpDataStructure:[],
-        dataLength:0,
+        AhpDataStructureTemp: [],
+        AhpDataStructure: [],
+        dataLength: 0,
       }
     },
     methods: {
-      sendAhpData(){
-        let postData={
-          'ahpInfoData':this.ahpInfoData,
-          'dataStructure':this.AhpDataStructureTemp,
-          'infoLength':this.dataLength
+      sendAhpData () {
+        this.dialogVisible3=false
+        let postData = {
+          'ahpInfoData': this.ahpInfoData,
+          'dataStructure': this.AhpDataStructureTemp,
+          'infoLength': this.dataLength
         }
-        axios.post('/getAhp/calculate',postData)
+        let _this= this;
+        axios.post('/getAhp/calculate', postData)
           .then(function (response) {
-            console.log(response.data)
+            if (response.data.length > 0) {
+              for (let index = 0; index < response.data.length; index++) {
+                alert('第' + response.data[index].data + '棵树权值设置不合理，请重新输入权值！')
+              }
+              _this.dialogVisible3=true
+            }
           })
           .catch(function (err) {
             console.log(err)
           })
       },
-      getLength(data){
-        let length=0;
-        for(let i=0;i<data.length;i++){
-          length+=((data[i]-1)+((data[i]-1)*((data[i]-1)-1))/2)
+      getLength (data) {
+        let length = 0
+        for (let i = 0; i < data.length; i++) {
+          length += ((data[i] - 1) + ((data[i] - 1) * ((data[i] - 1) - 1)) / 2)
         }
-        return length;
+        return length
       },
-      handleAhpData(){
-        this.getAhpDataStructure(this.treeData);
-        this.AhpDataStructureTemp=this.AhpDataStructure;
-        this.dataLength=this.getLength(this.AhpDataStructureTemp);
-        this.AhpDataStructure=[]
-        this.dialogVisible3=true;
+      handleAhpData () {
+        this.getAhpDataStructure(this.treeData)
+        this.AhpDataStructureTemp = this.AhpDataStructure
+        this.dataLength = this.getLength(this.AhpDataStructureTemp)
+        this.AhpDataStructure = []
+        this.dialogVisible3 = true
       },
-      getAhpDataStructure(data){
-        let childrenLength=data.children.length;
-        if(childrenLength!==0){
+      getAhpDataStructure (data) {
+        let childrenLength = data.children.length
+        if (childrenLength !== 0) {
           this.AhpDataStructure.push(childrenLength)
         }
-        for(let i=0;i<childrenLength;i++){
-          let obj=data.children[i];
-          this.getAhpDataStructure(obj);
+        for (let i = 0; i < childrenLength; i++) {
+          let obj = data.children[i]
+          this.getAhpDataStructure(obj)
         }
       },
       build () {
@@ -253,8 +254,8 @@
         return obj
       },
       addNewProject () {
-        if(this.input1===''){
-          alert("工程名输入不能为空！")
+        if (this.input1 === '') {
+          alert('工程名输入不能为空！')
           return null
         }
         const newChild = {id: 1, label: this.input1, children: []}
@@ -277,8 +278,8 @@
           })
       },
       doAdd () {
-        if(this.input===''){
-          alert("输入不能为空")
+        if (this.input === '') {
+          alert('输入不能为空')
           return null
         }
         const newChild = {id: id++, label: this.input, children: []}
@@ -303,7 +304,7 @@
         children.splice(index, 1)
       },
       renderContent (h, {node, data, store}) {
-        return(
+        return (
           <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
           <span>
           <span>{node.label}</span>

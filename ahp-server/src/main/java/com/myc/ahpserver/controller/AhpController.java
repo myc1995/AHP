@@ -15,17 +15,7 @@ public class AhpController {
     AhpService ahpService;
 
     @PostMapping(value = "/calculate")
-    public ResultData getTree(@RequestBody PostData postData) {
-        ahpService.handleAhpRequest(postData);
-//        List<Double[]> list = ahpService.handleData(postData);
-//        ahpService.fill2DArray(list, postData.getDataStructure());
-//        //System.out.println(postData.getDataStructure()[0]);
-//        int[] data1 = postData.getDataStructure();
-//        for (int i = 0; i < data1.length; i++) {
-//            System.out.println(data1[i]);
-//        }
-        ResultData resultData = new ResultData();
-        resultData.setData("hello,myc");
-        return resultData;
+    public List<ResultData> getTree(@RequestBody PostData postData) {
+        return ahpService.handleAhpRequest(postData);
     }
 }
