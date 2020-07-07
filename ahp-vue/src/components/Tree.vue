@@ -21,20 +21,28 @@
         </div>
       </el-col>
     </el-row>
+
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible3"
       width="80%"
       :before-close="handleClose">
-      <span v-for="n in dataLength">
-        <br v-if="n%5===0">
-        <el-input v-model="ahpInfoData[n-1]" placeholder="权重" style="width: 5%;margin-right: 2px"></el-input>
+      <span v-for="n in [3,4,5,3]">
+          <span v-for="i in n">
+            <el-input style="width: 5%;margin-right: 2px">{{i}}</el-input>
+          </span>
+        <br>
       </span>
+<!--      <span v-for="n in dataLength">-->
+<!--        <br v-if="n%5===0">-->
+<!--        <el-input v-model="ahpInfoData[n-1]" placeholder="权重" style="width: 5%;margin-right: 2px"></el-input>-->
+<!--      </span>-->
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible3 = false">取 消</el-button>
     <el-button type="primary" @click="this.sendAhpData">确 定</el-button>
   </span>
     </el-dialog>
+
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
@@ -311,12 +319,12 @@
           </span>
           <span>
           <el-button style="font-size: 12px;" type="text" on-click={ () => this.handleAdd(data) }>添加节点</el-button>
-        <el-button style="font-size: 12px;" type="text" on-click={ () => this.handleModify(node, data) }>修改节点</el-button>
         <el-button style="font-size: 12px;" type="text" on-click={ () => this.remove(node, data) }>删除节点</el-button>
         </span>
         </span>
         )
       },
+      // <el-button style="font-size: 12px;" type="text" on-click={ () => this.handleModify(node, data) }>修改节点</el-button>
       handleNodeClick (data) {
         console.log(data.value)
       },
