@@ -13,7 +13,7 @@
         </el-tree>
         <el-button type="primary" @click="this.build">生成树图</el-button>
         <el-button type="primary" @click="this.handleAhpData">编辑权重</el-button>
-        <el-button type="primary" @click="">工程分析</el-button>
+        <el-button type="primary">工程分析</el-button>
       </el-col>
       <el-col :span="15">
         <div>
@@ -27,16 +27,28 @@
       :visible.sync="dialogVisible3"
       width="80%"
       :before-close="handleClose">
-      <span v-for="n in [3,4,5,3]">
-          <span v-for="i in n">
-            <el-input style="width: 5%;margin-right: 2px">{{i}}</el-input>
-          </span>
-        <br>
-      </span>
-<!--      <span v-for="n in dataLength">-->
-<!--        <br v-if="n%5===0">-->
-<!--        <el-input v-model="ahpInfoData[n-1]" placeholder="权重" style="width: 5%;margin-right: 2px"></el-input>-->
-<!--      </span>-->
+      <el-row type="flex" class="row-bg" justify="center" v-for="n in [3,4,5,3]" v-bind:key="n.id">
+        <el-col :span="6">
+          <div class="grid-content bg-purple">
+            <span>树根为"烟草质量"的判断矩阵：</span>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="grid-content bg-purple-light">
+            <el-row v-for="i in [4,3,2,1]" type="flex" justify="end" v-bind:key="i.id">
+              <el-input v-for="item in i" v-bind:key="item.id" style="width: 6%;margin-right: 5%"></el-input>
+              <br>
+            </el-row>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="grid-content bg-purple">
+            <span>
+              RI值为：0.0089863.
+            </span>
+          </div>
+        </el-col>
+      </el-row>
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible3 = false">取 消</el-button>
     <el-button type="primary" @click="this.sendAhpData">确 定</el-button>
@@ -171,7 +183,7 @@
                 {'name': '氮', 'value': 4116, 'children': []},
                 {'name': '磷', 'value': 2105, 'children': []},
                 {'name': '钾', 'value': 1316, 'children': []},
-                {'name': '硼', 'value': 3151, 'children': []},
+                {'name': '硼', 'value': 3151, 'children': []}
               ]
             },
             {
@@ -181,7 +193,7 @@
                 {'name': '正常', 'value': 2435, 'children': []},
                 {'name': '缺乏', 'value': 4839, 'children': []},
                 {'name': '暴晒', 'value': 1756, 'children': []},
-                {'name': '无光', 'value': 4268, 'children': []},
+                {'name': '无光', 'value': 4268, 'children': []}
 
               ]
             },
@@ -200,25 +212,25 @@
         eachChildren: [],
         AhpDataStructureTemp: [],
         AhpDataStructure: [],
-        dataLength: 0,
+        dataLength: 0
       }
     },
     methods: {
       sendAhpData () {
-        this.dialogVisible3=false
+        this.dialogVisible3 = false
         let postData = {
           'ahpInfoData': this.ahpInfoData,
           'dataStructure': this.AhpDataStructureTemp,
           'infoLength': this.dataLength
         }
-        let _this= this;
+        let _this = this
         axios.post('/getAhp/calculate', postData)
           .then(function (response) {
             if (response.data.length > 0) {
               for (let index = 0; index < response.data.length; index++) {
                 alert('第' + response.data[index].data + '棵树权值设置不合理，请重新输入权值！')
               }
-              _this.dialogVisible3=true
+              _this.dialogVisible3 = true
             }
           })
           .catch(function (err) {
@@ -396,5 +408,40 @@
     height: 500px;
     border: 1px solid red;
     margin: 0 auto;
+  }
+
+  .el-row {
+    margin-bottom: 20px;
+
+  &
+  :last-child {
+    margin-bottom: 0;
+  }
+
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+
+  .bg-purple {
+    background: #d3dce6;
+  }
+
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
   }
 </style>
